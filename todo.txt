@@ -1,0 +1,18 @@
+Features for now:
+* Syntax highlighting.
+* Indent for blank line.
+* Bracket matching.
+* Run compiler -> highlight errors in file.
+* Link plugin to file extension.
+* Installation & configuration.
+
+Maybe / later:
+* Goto definition within file.
+* Tooltip for unambiguous definition in file.
+* Goto definition in other solution file.
+* Goto definition in stdlib file.
+* Goto definition in used file.
+* Auto indent handling split lines.
+* Auto indent inside block comments and triple strings.
+* Selection / file reformat.
+* Enable / disable line numbers specifically for .pony files.
