@@ -114,7 +114,7 @@ namespace Pony
         {
           // Remove lines from line state list
           int line = snapshot.GetLineFromPosition(change.NewPosition).LineNumber;
-          _lineStartState.RemoveRange(line, -change.LineCountDelta);
+          _lineStartState.RemoveRange(line + 1, -change.LineCountDelta);
         }
       }
 

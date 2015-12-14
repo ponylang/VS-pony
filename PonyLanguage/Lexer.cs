@@ -9,6 +9,7 @@ namespace Pony
     private string _buffer;
     private int _state;
     private readonly IDictionary<string, TokenId> _keywords = new Dictionary<string, TokenId>();
+    private readonly IDictionary<string, TokenId> _hash_keywords = new Dictionary<string, TokenId>();
     private readonly IList<Tuple<string, TokenId>> _symbols = new List<Tuple<string, TokenId>>();
 
     public const int newState = -2;
@@ -20,20 +21,24 @@ namespace Pony
       _keywords["_"] = TokenId.DontCare;
       _keywords["true"] = TokenId.TrueFalse;
       _keywords["false"] = TokenId.TrueFalse;
-      _keywords["compiler_intrinsic"] = TokenId.Intrinsic;
+      _keywords["compile_intrinsic"] = TokenId.Intrinsic;
       _keywords["use"] = TokenId.Use;
       _keywords["type"] = TokenId.Type;
       _keywords["interface"] = TokenId.Interface;
       _keywords["trait"] = TokenId.Trait;
       _keywords["primitive"] = TokenId.Primitive;
+      _keywords["struct"] = TokenId.Struct;
       _keywords["class"] = TokenId.Class;
       _keywords["actor"] = TokenId.Actor;
       _keywords["object"] = TokenId.Object;
+      _keywords["lambda"] = TokenId.Lambda;
+      _keywords["delegate"] = TokenId.Delegate;
       _keywords["as"] = TokenId.As;
       _keywords["is"] = TokenId.Is;
       _keywords["isnt"] = TokenId.Isnt;
       _keywords["var"] = TokenId.Var;
       _keywords["let"] = TokenId.Let;
+      _keywords["embed"] = TokenId.Embed;
       _keywords["new"] = TokenId.New;
       _keywords["fun"] = TokenId.Fun;
       _keywords["be"] = TokenId.Be;
@@ -48,9 +53,11 @@ namespace Pony
       _keywords["break"] = TokenId.Break;
       _keywords["continue"] = TokenId.Continue;
       _keywords["error"] = TokenId.Error;
+      _keywords["compile_error"] = TokenId.CompileError;
       _keywords["consume"] = TokenId.Continue;
       _keywords["recover"] = TokenId.Recover;
       _keywords["if"] = TokenId.If;
+      _keywords["ifdef"] = TokenId.Ifdef;
       _keywords["then"] = TokenId.Then;
       _keywords["else"] = TokenId.Else;
       _keywords["elseif"] = TokenId.ElseIf;
@@ -65,6 +72,17 @@ namespace Pony
       _keywords["where"] = TokenId.Where;
       _keywords["try"] = TokenId.Try;
       _keywords["with"] = TokenId.With;
+      _keywords["not"] = TokenId.Not;
+      _keywords["and"] = TokenId.And;
+      _keywords["or"] = TokenId.Or;
+      _keywords["xor"] = TokenId.Xor;
+      _keywords["identityof"] = TokenId.IdentityOf;
+      _keywords["addressof"] = TokenId.AddressOf;
+
+      _hash_keywords["#any"] = TokenId.Capability;
+      _hash_keywords["#read"] = TokenId.Capability;
+      _hash_keywords["#send"] = TokenId.Capability;
+      _hash_keywords["#share"] = TokenId.Capability;
 
       // Longer symbols must appear before shorter prefixes
       _symbols.Add(new Tuple<string, TokenId>("...", TokenId.Ellipsis));
@@ -98,6 +116,7 @@ namespace Pony
       _symbols.Add(new Tuple<string, TokenId>("|", TokenId.InfixOp));
       _symbols.Add(new Tuple<string, TokenId>("&", TokenId.Ampersand));
       _symbols.Add(new Tuple<string, TokenId>("^", TokenId.Ephemeral));
+      _symbols.Add(new Tuple<string, TokenId>("!", TokenId.Borrowed));
       _symbols.Add(new Tuple<string, TokenId>("?", TokenId.Question));
     }
 
@@ -154,11 +173,17 @@ namespace Pony
       if(c == '"')
         return ProcessString(out length);
 
+      if(c == '\'')
+        return ProcessCharLiteral(out length);
+
       if(c >= '0' && c <= '9')
         return ProcessNumber(out length);
 
       if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_')
         return ProcessId(out length);
+
+      if(c == '#')
+        return ProcessHash(out length);
 
       if(IsSymbolChar(c))
         return ProcessSymbol(out length);
@@ -245,11 +270,30 @@ namespace Pony
         else if((c >= 'A') && (c <= 'Z'))
           digit = c - 'A' + 10;
 
-        if(digit >= int_base)
+        if(c != '_' && digit >= int_base)
           return length;
       }
 
       return _buffer.Length;
+    }
+
+
+    private TokenId ProcessCharLiteral(out int length)
+    {
+      for(int len = 1; len < _buffer.Length; len++)
+      {
+        if(_buffer[len] == '\'')
+        {
+          length = len + 1;
+          return TokenId.Number;
+        }
+
+        if(_buffer[len] == '\\') // Escape, skip next character
+          len++;
+      }
+
+      length = _buffer.Length;
+      return TokenId.Number;
     }
 
 
@@ -285,10 +329,14 @@ namespace Pony
 
     private TokenId ProcessTripleString(out int length)
     {
-      for(int len = 3; len < _buffer.Length; len++)
+      for(int len = 3; len <= _buffer.Length; len++)
       {
-        if(_buffer[len - 2] == '"' && _buffer[len - 1] == '"' && _buffer[len] == '"')
+        if(_buffer[len - 3] == '"' && _buffer[len - 2] == '"' && _buffer[len - 1] == '"')
         {
+          // End of triple string found. Check for trailing "s.
+          while(len < _buffer.Length && _buffer[len] == '"')
+            len++;
+
           length = len;
           _state = normalState;
           return TokenId.String;
@@ -315,6 +363,20 @@ namespace Pony
         return TokenId.TypeID;
 
       return TokenId.VarID;
+    }
+
+
+    private TokenId ProcessHash(out int length)
+    {
+      length = IdLength();
+      string id = _buffer.Substring(0, length);
+
+      // Check for keywords
+      if(_hash_keywords.ContainsKey(id))
+        return _hash_keywords[id];
+
+      length = 1;
+      return TokenId.Ignore;
     }
 
 

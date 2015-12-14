@@ -69,14 +69,18 @@ namespace Pony
       _colourMap[TokenId.Interface] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Trait] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Primitive] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+      _colourMap[TokenId.Struct] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Class] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Actor] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Object] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+      _colourMap[TokenId.Lambda] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+      _colourMap[TokenId.Delegate] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.As] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Is] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Isnt] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Var] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Let] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+      _colourMap[TokenId.Embed] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.New] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Fun] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Be] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
@@ -86,9 +90,11 @@ namespace Pony
       _colourMap[TokenId.Break] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Continue] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Error] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
-      _colourMap[TokenId.Continue] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+      _colourMap[TokenId.CompileError] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+      _colourMap[TokenId.Consume] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Recover] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.If] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+      _colourMap[TokenId.Ifdef] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Then] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Else] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.ElseIf] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
@@ -103,6 +109,12 @@ namespace Pony
       _colourMap[TokenId.Where] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.Try] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
       _colourMap[TokenId.With] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Keyword);
+      _colourMap[TokenId.Not] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
+      _colourMap[TokenId.And] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
+      _colourMap[TokenId.Or] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
+      _colourMap[TokenId.Xor] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
+      _colourMap[TokenId.IdentityOf] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
+      _colourMap[TokenId.AddressOf] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
 
       _colourMap[TokenId.Ellipsis] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
       _colourMap[TokenId.Arrow] = typeService.GetClassificationType(ClassificationType);
@@ -122,6 +134,7 @@ namespace Pony
       _colourMap[TokenId.At] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
       _colourMap[TokenId.Ampersand] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Operator);
       _colourMap[TokenId.Ephemeral] = typeService.GetClassificationType(ClassificationType);
+      _colourMap[TokenId.Borrowed] = typeService.GetClassificationType(ClassificationType);
       _colourMap[TokenId.Question] = typeService.GetClassificationType(PredefinedClassificationTypeNames.Other);
 
       _lexTags.TagsChanged += LexTagChanged;
